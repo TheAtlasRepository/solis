@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "solis-ml"
+version = "0.1.0"
+description = ""
+authors = ["Mikkel Stårvik <mikkel.starvik@gmail.com>"]
+readme = "README.md"
+
+packages = [
+    { include = "solis_torch", from = "src" },
+    { include = "solis_lightning", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+lightning = "^2.1.0"
+torch = "^2.1.0"
+torchvision = "^0.16.0"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.25.2"
+
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "strict"
+useLibraryCodeForTypes = true
+
+reportMissingTypeStubs = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
