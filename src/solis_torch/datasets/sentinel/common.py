@@ -8,12 +8,11 @@ class S2Dataset(Dataset):
         self.image_dir = Path(root_dir) / "images"
         self.target_dir = Path(root_dir) / "targets" / cls
 
-        self.images = list(self.image_dir.glob("*.tif"))
+        self.images = {image.name for image in self.image_dir.glob("*.tif")}
+        self.targets = {target.name for target in self.target_dir.glob("*.tif")}
+
+    def get_image_path(self, filename):
+        return self.image_dir / filename
     
-    def __len__(self):
-        return len(self.images)
-    
-    def __getitem__(self, index):
-        image_path = self.images[index]
-        target_path = self.target_dir / image_path.name
-        return image_path, target_path
+    def get_target_path(self, filename):
+        return self.target_dir / filename

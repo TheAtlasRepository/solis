@@ -10,22 +10,19 @@ class S2Segmentation(S2Dataset):
         super().__init__(root_dir, cls)
         self.transform = transform
 
-        self.images = list(self.image_dir.glob("*.tif"))
+        self.targets = list(self.targets.intersection(self.images))
 
     def __len__(self):
-        return len(self.images)
+        return len(self.targets)
     
     def __getitem__(self, index):
-        image_path, target_path = super().__getitem__(index)
+        filename = self.targets[index]
 
-        with rasterio.open(image_path) as src:
+        with rasterio.open(self.get_image_path(filename)) as src:
             image = src.read().astype(np.float32)
 
-        if target_path.exists():
-            with rasterio.open(target_path) as src:
-                target = src.read(1).astype(np.float32)
-        else:
-            target = np.zeros(image.shape[1:], dtype=np.float32)
+        with rasterio.open(self.get_target_path(filename)) as src:
+            target = src.read(1).astype(np.float32)
 
         if self.transform:
             image, target = self.transform(image, target)

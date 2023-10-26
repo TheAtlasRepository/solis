@@ -10,21 +10,18 @@ class S2Classification(S2Dataset):
         self.transform = transform
         self.target_transform = target_transform
 
-        self.images = list(self.image_dir.glob("*.tif"))
+        self.images = list(self.images)
 
     def __len__(self):
         return len(self.images)
     
     def __getitem__(self, index):
-        image_path, target_path = super().__getitem__(index)
+        filename = self.images[index]
 
-        with rasterio.open(image_path) as src:
+        with rasterio.open(self.get_image_path(filename)) as src:
             image = src.read().astype(np.float32)
 
-        if target_path.exists():
-            target = 1
-        else:
-            target = 0
+        target = 1 if filename in self.targets else 0
 
         if self.transform:
             image = self.transform(image)
