@@ -11,10 +11,16 @@ class _DeepLabV3(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
         self.criterion = nn.BCEWithLogitsLoss()
-        self.precision = torchmetrics.classification.BinaryPrecision()
-        self.recall = torchmetrics.classification.BinaryRecall()
-        self.accuracy = torchmetrics.classification.BinaryAccuracy()
-        self.f1 = torchmetrics.classification.BinaryF1Score()
+
+        self.train_precision = torchmetrics.classification.BinaryPrecision()
+        self.train_recall = torchmetrics.classification.BinaryRecall()
+        self.train_accuracy = torchmetrics.classification.BinaryAccuracy()
+        self.train_f1 = torchmetrics.classification.BinaryF1Score()
+
+        self.val_precision = torchmetrics.classification.BinaryPrecision()
+        self.val_recall = torchmetrics.classification.BinaryRecall()
+        self.val_accuracy = torchmetrics.classification.BinaryAccuracy()
+        self.val_f1 = torchmetrics.classification.BinaryF1Score()
 
     def forward(self, input):
         return self.model(input)["out"]
@@ -53,29 +59,34 @@ class _DeepLabV3(pl.LightningModule):
         input, target = batch
         loss = outputs["loss"]
         output = outputs["output"]
-        self.precision(output[:, 1], target)
-        self.recall(output[:, 1], target)
-        self.accuracy(output[:, 1], target)
-        self.f1(output[:, 1], target)
+
+        self.train_precision(output[:, 1], target)
+        self.train_recall(output[:, 1], target)
+        self.train_accuracy(output[:, 1], target)
+        self.train_f1(output[:, 1], target)
+
         self.log("training/loss", loss)
-        self.log("training/precision", self.precision)
-        self.log("training/recall", self.recall)
-        self.log("training/accuracy", self.accuracy)
-        self.log("training/f1", self.f1)
+        self.log("training/precision", self.train_precision)
+        self.log("training/recall", self.train_recall)
+        self.log("training/accuracy", self.train_accuracy)
+        self.log("training/f1", self.train_f1)
     
     def on_validation_batch_end(self, outputs, batch, batch_idx):
         input, target = batch
         loss = outputs["loss"]
         output = outputs["output"]
-        self.precision(output[:, 1], target)
-        self.recall(output[:, 1], target)
-        self.accuracy(output[:, 1], target)
-        self.f1(output[:, 1], target)
+
+        self.val_precision(output[:, 1], target)
+        self.val_recall(output[:, 1], target)
+        self.val_accuracy(output[:, 1], target)
+        self.val_f1(output[:, 1], target)
+
+        self.log("hp_metric", self.val_f1)
         self.log("validation/loss", loss)
-        self.log("validation/precision", self.precision)
-        self.log("validation/recall", self.recall)
-        self.log("validation/accuracy", self.accuracy)
-        self.log("validation/f1", self.f1)
+        self.log("validation/precision", self.val_precision)
+        self.log("validation/recall", self.val_recall)
+        self.log("validation/accuracy", self.val_accuracy)
+        self.log("validation/f1", self.val_f1)
 
 
 class DeepLabV3ResNet50(_DeepLabV3):
