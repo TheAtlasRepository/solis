@@ -1,8 +1,8 @@
 from solis_torch.models import deeplabv3_resnet50, deeplabv3_resnet101
 
-import torch.nn as nn
 import lightning.pytorch as pl
 import torch
+import torch.nn as nn
 import torchmetrics.classification
 
 
@@ -89,7 +89,7 @@ class _DeepLabV3(pl.LightningModule):
         self.log("validation/f1", self.val_f1)
 
 
-class DeepLabV3ResNet50(_DeepLabV3):
+class DeepLabV3_ResNet50(_DeepLabV3):
     def __init__(self, num_channels: int, num_classes: int, learning_rate: float, momentum: float, weight_decay: float, lr_step_size: int, lr_gamma: float):
         super().__init__(learning_rate, momentum, weight_decay, lr_step_size, lr_gamma)
         self.model = deeplabv3_resnet50(
@@ -97,7 +97,7 @@ class DeepLabV3ResNet50(_DeepLabV3):
             num_classes=self.hparams.num_classes)
 
 
-class DeepLabV3ResNet101(_DeepLabV3):
+class DeepLabV3_ResNet101(_DeepLabV3):
     def __init__(self, num_channels: int, num_classes: int, learning_rate: float, momentum: float, weight_decay: float, lr_step_size: int, lr_gamma: float):
         super().__init__(learning_rate, momentum, weight_decay, lr_step_size, lr_gamma)
         self.model = deeplabv3_resnet101(
