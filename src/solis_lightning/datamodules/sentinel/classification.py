@@ -4,9 +4,8 @@ import torch
 import torchvision.transforms.v2 as transforms
 
 
-
 class S2Classification(pl.LightningDataModule):
-    def __init__(self, root_dir: str, cls: str, batch_size: int, num_workers: int):
+    def __init__(self, root_dir: str, batch_size: int = 1, num_workers: int = 0):
         super().__init__()
         self.batch_size = batch_size
         self.num_workers = num_workers
@@ -18,8 +17,7 @@ class S2Classification(pl.LightningDataModule):
         ])
 
         dataset = datasets.S2Classification(
-            root_dir, cls,
-            transform=transform)
+            root_dir, transform=transform)
 
         self.train_dataset, self.val_dataset = torch.utils.data.random_split(
             dataset, [0.8, 0.2])
@@ -29,10 +27,12 @@ class S2Classification(pl.LightningDataModule):
             self.train_dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
+            pin_memory=True,
             shuffle=True)
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(
             self.val_dataset,
             batch_size=self.batch_size,
-            num_workers=self.num_workers)
+            num_workers=self.num_workers,
+            pin_memory=True)

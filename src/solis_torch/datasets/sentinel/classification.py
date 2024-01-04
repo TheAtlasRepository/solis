@@ -5,8 +5,8 @@ import rasterio
 
 
 class S2Classification(S2Dataset):
-    def __init__(self, root_dir: str, cls: str, transform=None, target_transform=None):
-        super().__init__(root_dir, cls)
+    def __init__(self, root_dir: str, transform=None, target_transform=None):
+        super().__init__(root_dir)
         self.transform = transform
         self.target_transform = target_transform
 
@@ -21,7 +21,7 @@ class S2Classification(S2Dataset):
         with rasterio.open(self.get_image_path(filename)) as src:
             image = src.read().astype(np.float32)
 
-        target = 1 if filename in self.targets else 0
+        target = 1.0 if filename in self.targets else 0.0
 
         if self.transform:
             image = self.transform(image)

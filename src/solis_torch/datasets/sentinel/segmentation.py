@@ -1,13 +1,12 @@
 from .common import S2Dataset
-from pathlib import Path
 
 import numpy as np
 import rasterio
 
 
 class S2Segmentation(S2Dataset):
-    def __init__(self, root_dir: str, cls: str, transform=None):
-        super().__init__(root_dir, cls)
+    def __init__(self, root_dir: str, transform=None):
+        super().__init__(root_dir)
         self.transform = transform
 
         self.targets = list(self.targets.intersection(self.images))

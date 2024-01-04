@@ -3,10 +3,10 @@ from pathlib import Path
 
 
 class S2Dataset(Dataset):
-    def __init__(self, root_dir: str, cls: str):
+    def __init__(self, root_dir: str):
         super().__init__()
         self.image_dir = Path(root_dir) / "images"
-        self.target_dir = Path(root_dir) / "targets" / cls
+        self.target_dir = Path(root_dir) / "targets"
 
         self.images = {image.name for image in self.image_dir.glob("*.tif")}
         self.targets = {target.name for target in self.target_dir.glob("*.tif")}
