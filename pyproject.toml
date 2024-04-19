@@ -17,7 +17,7 @@ python = "^3.11"
 lightning = {extras = ["pytorch-extra"], version = "^2.1.0"}
 rasterio = "^1.3.9"
 torch = "^2.1.1"
-torchvision = "^0.16.0 || >=0.16.0, <0.19.0"
+torchvision = "^0.16.0
 
 
 [tool.poetry.group.dev.dependencies]
